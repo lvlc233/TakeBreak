@@ -21,6 +21,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.takeabreak.app
         CODE_SIGN_ENTITLEMENTS: App/TakeABreak.entitlements
         INFOPLIST_KEY_CFBundleDisplayName: 歇一会儿
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
         GENERATE_INFOPLIST_FILE: YES
     dependencies:
       - target: BreakMonitor
