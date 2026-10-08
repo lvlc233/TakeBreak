@@ -7,6 +7,8 @@ settings:
   base:
     SWIFT_VERSION: '5.9'
     DEVELOPMENT_TEAM: YOUR_TEAM_ID
+    MARKETING_VERSION: '1.0.0'
+    CURRENT_PROJECT_VERSION: '1'
 targets:
   TakeABreak:
     type: application

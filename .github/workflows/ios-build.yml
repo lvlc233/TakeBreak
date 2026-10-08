@@ -1,0 +1,31 @@
+name: iOS unsigned build
+
+on:
+  push:
+    paths:
+      - "ios/**"
+      - ".github/workflows/ios-build.yml"
+  workflow_dispatch:
+
+jobs:
+  simulator-build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate Xcode project
+        working-directory: ios
+        run: xcodegen generate
+      - name: Build iOS Simulator app and extensions
+        working-directory: ios
+        run: >
+          xcodebuild
+          -project TakeABreak.xcodeproj
+          -scheme TakeABreak
+          -configuration Debug
+          -sdk iphonesimulator
+          -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath "$RUNNER_TEMP/TakeABreakDerivedData"
+          CODE_SIGNING_ALLOWED=NO
+          build

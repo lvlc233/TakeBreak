@@ -10,9 +10,9 @@ enum BreakState {
     static let limit = DeviceActivityEvent.Name("limit")
 
     static var defaults: UserDefaults { UserDefaults(suiteName: group)! }
-    static var workMinutes: Int { max(1, defaults.object(forKey: "workMinutes") as? Int ?? 30) }
-    static var restMinutes: Int { max(15, defaults.integer(forKey: "restMinutes")) }
-    static var requiredCharacters: Int { max(1, defaults.object(forKey: "requiredCharacters") as? Int ?? 20) }
+    static var workMinutes: Int { min(240, max(1, defaults.object(forKey: "workMinutes") as? Int ?? 30)) }
+    static var restMinutes: Int { min(120, max(15, defaults.object(forKey: "restMinutes") as? Int ?? 15)) }
+    static var requiredCharacters: Int { min(200, max(1, defaults.object(forKey: "requiredCharacters") as? Int ?? 20)) }
     static var enabled: Bool { defaults.bool(forKey: "enabled") }
     static var unlockAt: Date? { defaults.object(forKey: "unlockAt") as? Date }
 
@@ -52,6 +52,14 @@ enum BreakState {
         )
     }
 
+    static var usageSchedule: DeviceActivitySchedule {
+        DeviceActivitySchedule(
+            intervalStart: DateComponents(hour: 0, minute: 0),
+            intervalEnd: DateComponents(hour: 23, minute: 59),
+            repeats: true
+        )
+    }
+
     static func restartUsage() throws {
         let center = DeviceActivityCenter()
         center.stopMonitoring([usage, cooldown])
@@ -65,16 +73,16 @@ enum BreakState {
             webDomains: picked.webDomainTokens,
             threshold: DateComponents(minute: workMinutes)
         )
-        let now = Date()
-        try center.startMonitoring(usage, during: schedule(from: now, to: now.addingTimeInterval(23 * 3600)), events: [limit: event])
+        try center.startMonitoring(usage, during: usageSchedule, events: [limit: event])
     }
 
     static func beginRest() throws {
+        guard enabled, unlockAt == nil else { return }
         let center = DeviceActivityCenter()
-        center.stopMonitoring([usage])
         let now = Date()
         let end = now.addingTimeInterval(TimeInterval(restMinutes * 60))
         try center.startMonitoring(cooldown, during: schedule(from: now, to: end), events: [:])
+        center.stopMonitoring([usage])
         defaults.set(end, forKey: "unlockAt")
         shieldSelected()
     }
