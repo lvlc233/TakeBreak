@@ -1,0 +1,46 @@
+name: TakeABreak
+options:
+  bundleIdPrefix: com.takeabreak
+  deploymentTarget:
+    iOS: '16.0'
+settings:
+  base:
+    SWIFT_VERSION: '5.9'
+    DEVELOPMENT_TEAM: YOUR_TEAM_ID
+targets:
+  TakeABreak:
+    type: application
+    platform: iOS
+    sources:
+      - App
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.takeabreak.app
+        CODE_SIGN_ENTITLEMENTS: App/TakeABreak.entitlements
+        INFOPLIST_KEY_CFBundleDisplayName: 歇一会儿
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: BreakMonitor
+      - target: BreakShield
+  BreakMonitor:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Monitor
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.takeabreak.app.monitor
+        CODE_SIGN_ENTITLEMENTS: Monitor/BreakMonitor.entitlements
+        INFOPLIST_FILE: Monitor/Info.plist
+  BreakShield:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Shield
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.takeabreak.app.shield
+        CODE_SIGN_ENTITLEMENTS: Shield/BreakShield.entitlements
+        INFOPLIST_FILE: Shield/Info.plist
