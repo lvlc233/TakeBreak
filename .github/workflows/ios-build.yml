@@ -38,7 +38,7 @@ jobs:
           xcrun simctl bootstatus "$DEVICE" -b
           xcrun simctl install "$DEVICE" "$RUNNER_TEMP/TakeABreakDerivedData/Build/Products/Debug-iphonesimulator/TakeABreak.app"
           xcrun simctl launch "$DEVICE" com.takeabreak.app
-          sleep 3
+          sleep 15
           mkdir -p "$RUNNER_TEMP/TakeABreakScreenshots"
           xcrun simctl io "$DEVICE" screenshot "$RUNNER_TEMP/TakeABreakScreenshots/home.png"
       - name: Upload simulator screenshot
